@@ -1,0 +1,165 @@
+<% layout('layouts/boilerplate') %>
+
+<style>
+    .card-box {
+        padding: 20px;
+        border-radius: 1rem;
+        margin-bottom: 30px;
+        background-color: #fff;
+    }
+
+    .file-man-box {
+        padding: 20px;
+        border: 1px solid #e3eaef;
+        border-radius: 5px;
+        position: relative;
+        margin-bottom: 20px
+    }
+
+    .file-man-box .file-close {
+        color: #f1556c;
+        position: absolute;
+        line-height: 24px;
+        font-size: 24px;
+        right: 10px;
+        top: 10px;
+        visibility: hidden
+    }
+
+    .file-man-box .file-img-box {
+        line-height: 120px;
+        text-align: center
+    }
+
+    .file-man-box .file-img-box img {
+        height: 64px
+    }
+
+    .file-man-box .file-download {
+        font-size: 32px;
+        color: #98a6ad;
+        position: absolute;
+        right: 10px
+    }
+
+    .file-man-box .file-download:hover {
+        color: #313a46
+    }
+
+    .file-man-box .file-man-title {
+        padding-right: 25px
+    }
+
+    .file-man-box:hover {
+        -webkit-box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02);
+        box-shadow: 0 0 24px 0 rgba(0, 0, 0, .06), 0 1px 0 0 rgba(0, 0, 0, .02)
+    }
+
+    .file-man-box:hover .file-close {
+        visibility: visible
+    }
+
+    .text-overflow {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    h5 {
+        font-size: 15px;
+    }
+
+    img {
+        height: 100px;
+        width: 100px;
+    }
+
+    .container {
+        background-color: transparent;
+    }
+
+    .file-img-box {
+        position: relative;
+    }
+
+    .file-img-box img {
+        display: block;
+        width: 100%;
+    }
+
+    .file-img-box .text {
+        position: absolute;
+        top: 60%;
+        left: 80%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #343a40;
+        padding: 4px 8px;
+        border-radius: 4px;
+        overflow: visible;
+    }
+
+    #goBack {
+        color: white;
+        border: 1px solid lime;
+        border-radius: 1rem;
+        padding: 6px;
+        text-decoration: none;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="content">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box" style="background-color: transparent;">
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-6 mb-4">
+                            <a class=" bg-dark" href="" id="goBack">
+                                <img src="/icons/back-arrow.svg" alt="back"
+                                    style="height: 65%; width: 15%; padding-bottom: 4px;">
+                            </a>
+                        </div>
+                    </div>
+                    <div class=" row">
+                        <% for(let file of list){ %>
+                        <div class="col-lg-2 col-xl-2 col-sm-6 col-md-3 text-center ">
+                            <% if(file.type === 'd'){ %>
+                            <a href="" style="text-decoration: none;">
+                                <div class="file-img-box"><img src="/icons/folderIcon.svg" alt="icon"></div>
+                                <div class="file-man-title">
+                                    <h5 class="mb-0 text-overflow text-white links"><%= file.name %></h5>
+                                </div>
+                            </a>
+
+                            <%} else{%>
+                            <div class="file-img-box"><img src="/icons/fileIcon.svg" alt="icon">
+                                <div class="text">.<%= file.name.split('.').pop() %></div>
+                            </div>
+                            <div class="file-man-title">
+                                <h5 class="mb-0 text-overflow text-white"><%= file.name %></h5>
+                            </div>
+                            <a href="/download/<%= encodeURIComponent(file.name) %>"
+                                download="<%= encodeURIComponent(file.name) %>" class="file-download "><img
+                                    src="https://www.svgrepo.com/show/505363/download.svg"
+                                    style="width: 40px; height: 36px;"></a>
+                            <%}%>
+                        </div>
+                        <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/script.js"></script>

@@ -1,0 +1,37 @@
+<% layout('/layouts/boilerplate') %>
+
+
+<div class="container py-5 vh-100 ">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card text-white divStyle bg-dark" style="border-radius: 1rem; display:block;">
+                <div class="card-body p-5 text-center">
+                    <div>
+                        <h2 class="fw-bold mb-2 text-uppercase">FTPClient</h2>
+                        <p class="text-white-50 mb-3">Connect to your ftp server</p>
+                        <form action="/connect" method="POST">
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="host">Hostname</label>
+                                <input type="text" id="host" name="host" class="form-control form-control-lg" />
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="user">Username</label>
+                                <input type="text" id="user" name="user" class="form-control form-control-lg"
+                                    placeholder="Default: anonymous" />
+                            </div>
+
+                            <div class="form-outline mb-4">
+                                <label class="form-label" for="password">Password</label>
+                                <input type="password" id="password" name="password"
+                                    class="form-control form-control-lg" />
+                            </div>
+
+                            <button class="btn btn-outline-light btn-lg px-5 borderColor" type="submit">Connect</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

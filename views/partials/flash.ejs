@@ -1,0 +1,23 @@
+<style>
+    .divAlert {
+        border-color: lime !important;
+        display: inline-block !important;
+        position: absolute !important;
+        color: white !important;
+        bottom: 0 !important;
+        right: 0 !important;
+        z-index: 999;
+    }
+</style>
+
+<%if( success && success.length){ %>
+<div class="alert mt-3 bg-dark divAlert" role="alert">
+    <%= success %>
+</div>
+<%}%>
+
+<%if( error && error.length){ %>
+<div class="alert mt-3 bg-dark divAlert" role=" alert">
+    <%=error%>
+</div>
+<%}%>
