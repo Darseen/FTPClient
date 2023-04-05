@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const ftp = require('promise-ftp');
-const fs = require('fs');
 const { wrapAsync, isAuthorized } = require('../utils/middlewareFunctions');
-const { Stream } = require('stream');
+const { pipeline } = require('stream/promises');
 
 const client = new ftp();
 
@@ -53,7 +52,7 @@ router.get('/download/:filename', isAuthorized, wrapAsync(async (req, res) => {
 
     const stream = await client.get(decodedFilename);
 
-    stream.pipe(res);
+    await pipeline(stream, res);
 
     req.on('close', () => {
         stream.destroy();
