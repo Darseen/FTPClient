@@ -5,8 +5,8 @@ const methodOverride = require('method-override')
 const AppError = require('./utils/AppError');
 const session = require('express-session');
 const flash = require('connect-flash');
-const { isAuthorized } = require('./utils/middlewareFunctions');
-
+const MongoDBStore = require("connect-mongo");
+require('dotenv').config();
 
 const app = express();
 
@@ -19,7 +19,17 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+const dbUrl = process.env.DB_URL
+const store = MongoDBStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: 'asdfasdfas'
+    }
+});
+
 const sessionConfig = {
+    store,
     name: "Cname",
     secret: "ANYTHING",
     resave: false,

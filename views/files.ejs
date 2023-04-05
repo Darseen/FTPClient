@@ -148,9 +148,8 @@
                             <div class="file-man-title">
                                 <h5 class="mb-0 text-overflow text-white"><%= file.name %></h5>
                             </div>
-                            <a href="/download/<%= encodeURIComponent(file.name) %>"
-                                download="<%= encodeURIComponent(file.name) %>" class="file-download "><img
-                                    src="https://www.svgrepo.com/show/505363/download.svg"
+                            <a href="/download/<%= encodeURIComponent(file.name) %>" download="<%= file.name %>"
+                                class="file-download "><img src="https://www.svgrepo.com/show/505363/download.svg"
                                     style="width: 40px; height: 36px;"></a>
                             <%}%>
                         </div>

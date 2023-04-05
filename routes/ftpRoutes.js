@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const ftp = require('promise-ftp');
 const { wrapAsync, isAuthorized } = require('../utils/middlewareFunctions');
-const { pipeline } = require('stream/promises');
+const { pipeline } = require('node:stream/promises');
 
 const client = new ftp();
 
@@ -48,7 +48,7 @@ router.get('/download/:filename', isAuthorized, wrapAsync(async (req, res) => {
 
     res.setHeader('Content-Disposition', `attachment; filename=${decodedFilename}`);
     res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Transfer-Encoding', 'binary');
+    res.setHeader('Content-Transfer-Encoding', 'chunked');
 
     const stream = await client.get(decodedFilename);
 
