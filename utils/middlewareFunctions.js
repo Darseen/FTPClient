@@ -12,7 +12,7 @@ module.exports.isAuthorized = (client) => {
             req.session.ftp = false;
             req.session.status = status;
 
-            req.flash('error', "Not Connected!");
+            req.flash('error', "Not Connected");
             return res.redirect('/');
         }
         next();

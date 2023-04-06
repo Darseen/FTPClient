@@ -25,6 +25,11 @@ router.post('/connect', wrapAsync(async (req, res) => {
         password
     };
 
+    const status = client.getConnectionStatus();
+    if (status === 'connected') {
+        client.destroy();
+    }
+
     const response = await client.connect(connectionConfig);
     if (response) {
         req.session.ftp = true;
