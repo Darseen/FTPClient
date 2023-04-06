@@ -7,9 +7,13 @@ const { pipeline } = require('node:stream/promises');
 const client = new ftp();
 
 router.get('/', (req, res) => {
-    if (req.session.ftp) {
-        return res.redirect('/files')
+    const status = client.getConnectionStatus();
+
+    if (req.session.ftp && req.session.status === status) {
+        return res.redirect('/files');
     }
+    req.session.ftp = false;
+    req.session.status = status;
     res.render('home');
 })
 
@@ -20,29 +24,30 @@ router.post('/connect', wrapAsync(async (req, res) => {
         user,
         password
     };
+
     const response = await client.connect(connectionConfig);
     if (response) {
         req.session.ftp = true;
+        req.session.status = client.getConnectionStatus();
         req.flash('success', response);
         res.redirect('/files');
     }
 }))
 
-router.get('/files', isAuthorized, wrapAsync(async (req, res) => {
+router.get('/files', isAuthorized(client), wrapAsync(async (req, res) => {
     const list = await client.list('/');
     res.render('files', { list });
 }))
 
-router.get('/files/:path(*)', isAuthorized, wrapAsync(async (req, res) => {
+router.get('/files/:path(*)', isAuthorized(client), wrapAsync(async (req, res) => {
     const path = req.params.path;
-
     await client.cwd('/' + path);
 
     const list = await client.list('.');
     res.render('files', { list });
 }))
 
-router.get('/download/:filename', isAuthorized, wrapAsync(async (req, res) => {
+router.get('/download/:filename', isAuthorized(client), wrapAsync(async (req, res) => {
     const { filename } = req.params;
     const decodedFilename = decodeURIComponent(filename);
 
@@ -59,10 +64,9 @@ router.get('/download/:filename', isAuthorized, wrapAsync(async (req, res) => {
     })
 }))
 
-router.delete('/close', isAuthorized, (req, res) => {
+router.delete('/close', isAuthorized(client), (req, res) => {
     client.destroy();
-    delete req.session.ftp
-    req.flash('success', 'Connection Closed');
+    req.session.destroy();
     res.redirect('/');
 })
 

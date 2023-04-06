@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const dbUrl = process.env.DB_URL
 const store = MongoDBStore.create({
     mongoUrl: dbUrl,
-    touchAfter: 24 * 60 * 60,
+    ttl: 3600,
     crypto: {
         secret: 'asdfasdfas'
     }
@@ -36,8 +36,8 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24,
-        maxAge: 1000 * 60 * 60 * 24
+        expires: Date.now() + 1000 * 60 * 60,
+        maxAge: 1000 * 60 * 60
     }
 }
 app.use(session(sessionConfig));
@@ -62,13 +62,13 @@ app.all('*', (req, res, next) => {
 app.use((err, req, res, next) => {
     const { status = 500, message = "Something Went Wrong!" } = err;
     res.status(status)
-    if (req.session.ftp) {
+    if (req.session.ftp && req.session.status === 'connected') {
         req.session.returnUrl = '/files';
     }
     else {
         req.session.returnUrl = '/';
     }
-    res.render('error', { message, url: req.session.returnUrl })
+    res.render('error', { message, returnUrl: req.session.returnUrl });
 })
 
 app.listen(3000, () => {
