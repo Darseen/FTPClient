@@ -3,6 +3,8 @@ const router = express.Router();
 const ftp = require('promise-ftp');
 const { wrapAsync, isAuthorized } = require('../utils/middlewareFunctions');
 const { pipeline } = require('node:stream/promises');
+const { Readable } = require('node:stream');
+const busboy = require('busboy');
 
 const client = new ftp();
 
@@ -29,11 +31,10 @@ router.post('/connect', wrapAsync(async (req, res) => {
     if (status === 'connected') {
         client.destroy();
     }
-
     const response = await client.connect(connectionConfig);
     if (response) {
         req.session.ftp = true;
-        req.session.status = client.getConnectionStatus();
+        req.session.status = 'connected';
         req.flash('success', response);
         res.redirect('/files');
     }
@@ -67,6 +68,41 @@ router.get('/download/:filename', isAuthorized(client), wrapAsync(async (req, re
     req.on('close', () => {
         stream.destroy();
     })
+}))
+
+router.post('/upload', isAuthorized(client), wrapAsync(async (req, res, next) => {
+    const bb = busboy({ headers: req.headers });
+    const files = [];
+
+    bb.on('file', (name, file, info) => {
+        const { filename, encoding, mimeType } = info;
+        const fileData = {
+            name: filename,
+            type: mimeType,
+            data: [],
+        }
+        file.on('data', (chunk) => {
+            fileData.data.push(chunk);
+        });
+
+        file.on('end', () => {
+            files.push(fileData);
+        })
+
+    })
+    bb.on('finish', async () => {
+        for (let file of files) {
+            try {
+                const stream = Readable.from(file.data);
+                await client.put(stream, file.name);
+            } catch (err) {
+                next(err);
+            }
+        }
+    })
+    await pipeline(req, bb);
+    const path = await client.pwd();
+    res.redirect(`/files/${path}`);
 }))
 
 router.delete('/close', isAuthorized(client), (req, res) => {

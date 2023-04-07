@@ -9,9 +9,6 @@ module.exports.isAuthorized = (client) => {
 
         const status = client.getConnectionStatus();
         if (!req.session.ftp || req.session.status !== status) {
-            req.session.ftp = false;
-            req.session.status = status;
-
             req.flash('error', "Not Connected");
             return res.redirect('/');
         }
