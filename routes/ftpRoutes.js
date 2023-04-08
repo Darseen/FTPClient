@@ -10,10 +10,11 @@ const client = new ftp();
 
 router.get('/', (req, res) => {
     const status = client.getConnectionStatus();
-
+    console.log(status, req.session.status, req.session.ftp)
     if (req.session.ftp && req.session.status === status) {
         return res.redirect('/files');
     }
+
     req.session.ftp = false;
     req.session.status = status;
     res.render('home');
@@ -101,8 +102,21 @@ router.post('/upload', isAuthorized(client), wrapAsync(async (req, res, next) =>
         }
     })
     await pipeline(req, bb);
+
+    req.flash('success', 'File(s) Uploaded Successfully');
     const path = await client.pwd();
-    res.redirect(`/files/${path}`);
+    res.redirect(`/files${path}`);
+}))
+
+router.delete('/delete/:filename', isAuthorized(client), wrapAsync(async (req, res) => {
+    const { filename } = req.params;
+    const decodedFilename = decodeURIComponent(filename);
+
+    await client.delete(decodedFilename);
+    req.flash('success', 'File Deleted Successfully');
+
+    const path = await client.pwd();
+    res.redirect(`/files${path}`);
 }))
 
 router.delete('/close', isAuthorized(client), (req, res) => {

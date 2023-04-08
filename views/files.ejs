@@ -215,9 +215,12 @@
         <div>
             <a href="/download/<%= encodeURIComponent(file.name) %>" download="<%= file.name %>"
                 class="file-download "><img src="/icons/downloadIcon.svg" style="width: 40px; height: 30px;"></a>
-            <a href="/delete/<%= encodeURIComponent(file.name) %>">
-                <img src="/icons/deleteIcon.svg" style="width: 40px; height: 30px;">
-            </a>
+            <form action="/delete/<%= encodeURIComponent(file.name) %>?_method=DELETE" method="POST"
+                style="display: inline-block;">
+                <button style=" background-color: transparent; border: none;">
+                    <img src="/icons/deleteIcon.svg" style="width: 40px; height: 30px;">
+                </button>
+            </form>
         </div>
 
         <%}%>
