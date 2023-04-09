@@ -1,5 +1,5 @@
 # FTPClient
-An FTP client website to connect to ftp servers. Used node.js as the backend server and ejs for the frontend.<br><br>
+This is an FTP client website that connects to FTP servers, utilizing node.js as the backend server and ejs for the frontend interface.<br><br>
 <b>It supports multiple file upload, file download and the ability to delete files.</b>
 
 ![](/images/image1.png)
